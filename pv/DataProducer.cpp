@@ -41,6 +41,7 @@ void DataProducer::run() {
       elapsedSecondsDataChange = chrono::system_clock::now() - startTime;
       elapsedPeriodicity = chrono::system_clock::now() - startTimePeriodicity;
 
+      // each second, we update the data to be read (ie. the new row in dataset)
       if(elapsedSecondsDataChange >= 1s){
         startTime = chrono::system_clock::now();
 
@@ -52,6 +53,7 @@ void DataProducer::run() {
         }
       }
 
+      // each period, we update the data written in the common database
       if(elapsedPeriodicity >= m_periodicity){
         startTimePeriodicity = chrono::system_clock::now();
         // this->print_data();
