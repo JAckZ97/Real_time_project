@@ -1,6 +1,7 @@
 // standard imports
 #include <iostream>
 #include <string>
+#include<stdio.h>
 // user import
 #include "DataProducer.hpp"
 #include <thread>
@@ -11,10 +12,12 @@
  *
  * FIXME : modified the header for Engine_coolant_temperature since there is duplicate (ie modified top Engine_coolant_temparature1)
  *
+ * FIXME : add the std where necessary for more clarity
+ *
  * NOTE : to run the code
  * $ c++ -pthread *.cpp -o main
  * $ ./main
- */
+*/
 
 using namespace std;
 
@@ -40,12 +43,15 @@ int main(int argc, char *argv[]) {
 
     // showing what the common database has atm
     while(true){
-        sleep(1);
-        cout << "--------------" << endl;
+        usleep(10000);
+        // cout << "--------------" << endl;
+        // cout << left;
+        // cout <<  setw(40) << "fuel consumption" << data[0] << endl;
+        // cout <<  setw(40) << "engine speed" << data[1] << endl;
+        // cout <<  setw(40) << "engine coolant temperature" << data[2] << endl;
+
         cout << left;
-        cout <<  setw(40) << "fuel consumption" << data[0] << endl;
-        cout <<  setw(40) << "engine speed" << data[1] << endl;
-        cout <<  setw(40) << "engine coolant temperature" << data[2] << endl;
+        cout <<  "\r" << setw(10) << "fc" << data[0] <<  " | " << setw(10) << "es" << data[1] <<  " | " << setw(10) << "ect" << data[2] << flush;
     }
 
     obj.join();
