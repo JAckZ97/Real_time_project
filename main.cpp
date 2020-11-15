@@ -6,7 +6,7 @@ using namespace std;
 int main(){}
 
 //sample code for QNX IDE Json encode
-https://www.qnx.com/developers/docs/7.0.0/#com.qnx.doc.json/topic/manual/encoder_sample.html
+//https://www.qnx.com/developers/docs/7.0.0/#com.qnx.doc.json/topic/manual/encoder_sample.html
 bool prepare_file_info(char *str, int max_finfo_size)
 {
     // In this example, we hardcode the field settings but often, they would be input
