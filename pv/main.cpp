@@ -33,9 +33,10 @@ int main(int argc, char *argv[]) {
     // creating the data producer threads
     // FIXME : for now I add the pointer to the data array so that the data can be changed to simulate the common database
     // future version we should get rid of this input parameter
-    DataProducer prod("Fuel_consumption", 10ms, (p_data + 0));
-    DataProducer prod1("Engine_speed", 500ms, (p_data + 1));
-    DataProducer prod2("Engine_coolant_temperature1", 2s, (p_data + 2));
+    DataProducer prod("Fuel_consumption",0, 10ms, (p_data + 0));
+    DataProducer prod1("Engine_speed", 1, 500ms, (p_data + 1));
+    DataProducer prod2("Engine_coolant_temperature1",2, 2s, (p_data + 2));
+    // FIXME : NOT the current collumn numbers !
 
     std::thread obj(&DataProducer::run, prod);
     std::thread obj1(&DataProducer::run, prod1);

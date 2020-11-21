@@ -1,42 +1,15 @@
-#include <fstream>
-#include <iostream>
-#include <string>
-using namespace std;
+// #include <fstream>
+// #include <iostream>
+// #include <string>
+// #include "csv_reader.h"
+// using namespace std;
 
-void readRowCSV(string fileName, int rowNumber) {
-	ifstream myFile;
-	myFile.open(fileName);
-	string line;
-	int a = 0;
+// // FIXME -> for some damn reason, trying to read the first row is impossible !!!
 
-	while (getline(myFile, line)) {
-		a++;
-		if (a == rowNumber) {
-			cout << line << endl;
-			break;
-		}
+// int main() {
+// 	// csv_read::readRowCSV("test.csv", 2);
+// 	int data = csv_read::readCellCSV("test.csv", 3, 2);
+// 	cout << data << endl;
 
-	}
-}
-int main() {
-	readRowCSV("test.csv", 2);
-
-	return 0;
-}
-
-
-//void readRowCSV(string fileName, int rowNumber) {
-//	ifstream myFile;
-//	myFile.open(fileName);
-//	string line;
-//	int a = 0;
-//
-//	while (getline(myFile, line)) {
-//		a++;
-//		if (a == rowNumber) {
-//			cout << line << endl;
-//			break;
-//		}
-//
-//	}
-//}
+// 	return 0;
+// }

@@ -1,6 +1,7 @@
 #include "DataProducer.hpp"
+#include "csv_reader.h"
 
-DataProducer::DataProducer(string sensorDataType, std::chrono::duration<double> periodicity, float *extData) {
+DataProducer::DataProducer(string sensorDataType, int targetCollumn, std::chrono::duration<double> periodicity, float *extData) {
     // init variables
     m_sensorDataType = sensorDataType;
     m_periodicity = periodicity;
@@ -9,9 +10,11 @@ DataProducer::DataProducer(string sensorDataType, std::chrono::duration<double> 
 
     m_extData = extData;
 
+    m_targetCollumn = targetCollumn;
+
     // setup the csv reader
-    m_csvReader = new io::CSVReader<1>(m_csvFilePath);
-    m_csvReader->read_header(io::ignore_extra_column, m_sensorDataType);
+    // m_csvReader = new io::CSVReader<1>(m_csvFilePath);
+    // m_csvReader->read_header(io::ignore_extra_column, m_sensorDataType);
 }
 
 void DataProducer::print_data() {
@@ -25,7 +28,7 @@ int DataProducer::ms_2_us(int timeMS) {
 
 void DataProducer::run() {
 
-    int rowCount = 1; // we start at 1 because for better reference with the csv file, which the row starts with 1 label.
+    int rowCount = 2; // we start at 1 because for better reference with the csv file, which the row starts with 1 label.
 
     auto startTime = chrono::system_clock::now();
     auto startTimePeriodicity = chrono::system_clock::now();
@@ -35,28 +38,34 @@ void DataProducer::run() {
     bool csvReaderFlag;
 
     // read in the first data
-    csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
+    // csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
 
+    // while not done reading the csv file
     while(!csvEnd){
       elapsedSecondsDataChange = chrono::system_clock::now() - startTime;
       elapsedPeriodicity = chrono::system_clock::now() - startTimePeriodicity;
 
-      // each second, we update the data to be read (ie. the new row in dataset)
+      // each second, we go to the next row to read the data (since each new row is 1s passed since data read from sensor)
       if(elapsedSecondsDataChange >= 1s){
         startTime = chrono::system_clock::now();
 
-        csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
+        // csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
         rowCount++;
-        if(!csvReaderFlag){
-          csvEnd = true;
-          cout << "reached the end" << endl;
-        }
+
+        // FIXME : implement -> if reach the end -> exit
+        // if(!csvReaderFlag){
+        //   csvEnd = true;
+        //   cout << "reached the end" << endl;
+        // }
       }
 
-      // each period, we update the data written in the common database
+      // each period, we read the data
       if(elapsedPeriodicity >= m_periodicity){
         startTimePeriodicity = chrono::system_clock::now();
-        // this->print_data();
+        
+        // read data here
+        m_data = csv_read::readCellCSV(m_csvFilePath, rowCount, m_targetCollumn);
+
         *m_extData = m_data;
       }
     }
