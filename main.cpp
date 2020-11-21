@@ -18,25 +18,30 @@ void readRowCSV(string fileName, int rowNumber) {
 
 	}
 }
-int main() {
-	readRowCSV("test.csv", 2);
+void countAndShowCSV(string fileName, int rowNumber) {
+	ifstream myFile;
+	myFile.open(fileName);
 
-	return 0;
+	string line;
+	int counter = 0;
+
+	while (getline(myFile, line)) {
+		counter++;
+	}
+
+	if (rowNumber > counter) {
+		cout << "Row does not exist" << endl;
+	}
+	else {
+		readRowCSV(fileName, rowNumber);
+	}
 }
 
 
-//void readRowCSV(string fileName, int rowNumber) {
-//	ifstream myFile;
-//	myFile.open(fileName);
-//	string line;
-//	int a = 0;
-//
-//	while (getline(myFile, line)) {
-//		a++;
-//		if (a == rowNumber) {
-//			cout << line << endl;
-//			break;
-//		}
-//
-//	}
-//}
+int main() {
+
+	countAndShowCSV("test.csv", 3);
+	countAndShowCSV("test.csv", 2);
+
+	return 0;
+}
