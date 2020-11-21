@@ -19,6 +19,13 @@
  * $ ./main
 */
 
+/*
+- TODO : add csv_read end check in data producer thread
+- TODO : csv_read -> reading the first row gives error (the header row)
+- TODO : map the dataproducer threads to the correct collumn number 
+- TODO : glue everything together
+*/
+
 using namespace std;
 
 int main(int argc, char *argv[]) {
