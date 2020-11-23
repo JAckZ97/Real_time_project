@@ -11,7 +11,7 @@ namespace csv_read
     std::vector<double> readRowCSV(string fileName, int rowNumber, int maxRowNumber) {
         std::vector<double> rowData;
 
-        if(rowNumber > maxRowNumber){
+        if(rowNumber <= maxRowNumber){
             ifstream myFile;
             myFile.open(fileName);
             string targetLine = "";

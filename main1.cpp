@@ -14,9 +14,8 @@
  *
  * FIXME : add the std where necessary for more clarity
  *
- * NOTE : to run the code
- * $ c++ -pthread *.cpp -o main
- * $ ./main
+ * NOTE : to compile and run the code
+ * $ c++ -pthread *.cpp -o main && ./main
 */
 
 /*
@@ -26,6 +25,7 @@
 - TODO : glue everything together
 - TODO : maxCollumn for csv_reader
 - TODO : write to jack's share memory
+- TODO : how to end the whole script correctly
 */
 
 using namespace std;

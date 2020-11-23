@@ -21,7 +21,7 @@ class DataProducer {
   string m_sensorDataType;
   double m_data;
   std::chrono::duration<double> m_periodicity;
-  string m_csvFilePath = "car_data.csv";
+  string m_csvFilePath = "test.csv";
   // io::CSVReader<1>* m_csvReader;
   int m_targetCollumn;
   int m_maxRowNumber;

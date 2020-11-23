@@ -39,11 +39,13 @@ void DataProducer::run() {
     bool csvEnd = false;
     bool csvReaderFlag;
 
+
     // read in the first data
     // csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
 
     // while not done reading the csv file
     while(!csvEnd){
+      
       elapsedSecondsDataChange = chrono::system_clock::now() - startTime;
       elapsedPeriodicity = chrono::system_clock::now() - startTimePeriodicity;
 
@@ -55,10 +57,10 @@ void DataProducer::run() {
         rowCount++;
 
         // FIXME : implement -> if reach the end -> exit
-        // if(!csvReaderFlag){
-        //   csvEnd = true;
-        //   cout << "reached the end" << endl;
-        // }
+        if(rowCount > m_maxRowNumber){
+          csvEnd = true;
+          // cout << "reached the end" << rowCount << endl;
+        }
       }
 
       // each period, we read the data
@@ -68,7 +70,8 @@ void DataProducer::run() {
         // read data here
         m_data = csv_read::readCellCSV(m_csvFilePath, rowCount, m_targetCollumn, m_maxRowNumber);
 
-        *m_extData = m_data;
+        // write data in shared memory
+        
       }
     }
 }
