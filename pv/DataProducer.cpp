@@ -1,7 +1,7 @@
 #include "DataProducer.hpp"
 #include "csv_reader.h"
 
-DataProducer::DataProducer(string sensorDataType, int targetCollumn, std::chrono::duration<double> periodicity, float *extData) {
+DataProducer::DataProducer(string sensorDataType, int targetCollumn, std::chrono::duration<double> periodicity, double *extData) {
     // init variables
     m_sensorDataType = sensorDataType;
     m_periodicity = periodicity;
@@ -15,6 +15,8 @@ DataProducer::DataProducer(string sensorDataType, int targetCollumn, std::chrono
     // setup the csv reader
     // m_csvReader = new io::CSVReader<1>(m_csvFilePath);
     // m_csvReader->read_header(io::ignore_extra_column, m_sensorDataType);
+
+    m_maxRowNumber = csv_read::maxRowCSV(m_csvFilePath);
 }
 
 void DataProducer::print_data() {
@@ -64,7 +66,7 @@ void DataProducer::run() {
         startTimePeriodicity = chrono::system_clock::now();
         
         // read data here
-        m_data = csv_read::readCellCSV(m_csvFilePath, rowCount, m_targetCollumn);
+        m_data = csv_read::readCellCSV(m_csvFilePath, rowCount, m_targetCollumn, m_maxRowNumber);
 
         *m_extData = m_data;
       }

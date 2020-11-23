@@ -24,6 +24,8 @@
 - TODO : csv_read -> reading the first row gives error (the header row)
 - TODO : map the dataproducer threads to the correct collumn number 
 - TODO : glue everything together
+- TODO : maxCollumn for csv_reader
+- TODO : write to jack's share memory
 */
 
 using namespace std;
@@ -33,8 +35,8 @@ int main(int argc, char *argv[]) {
     cout << "Start program" << endl;
 
     // simulating the "common database"
-    float data[3] = {0,0,0};
-    float *p_data;
+    double data[3] = {0,0,0};
+    double *p_data;
     p_data = data;
 
     // creating the data producer threads
