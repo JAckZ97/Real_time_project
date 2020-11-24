@@ -1,14 +1,14 @@
-#include "DataProducer.hpp"
+#include "DataProducer.h"
 #include "csv_reader.h"
 
-DataProducer::DataProducer(string sensorDataType, int targetCollumn, std::chrono::duration<double> periodicity, double *extData) {
+DataProducer::DataProducer(string sensorDataType, int targetCollumn, std::chrono::duration<double> periodicity, SharedMemory *sharedMemory, int dataIndex) {
     // init variables
     m_sensorDataType = sensorDataType;
     m_periodicity = periodicity;
 
     m_data = 100;
 
-    m_extData = extData;
+    m_sharedMemory = sharedMemory;
 
     m_targetCollumn = targetCollumn;
 
@@ -17,6 +17,9 @@ DataProducer::DataProducer(string sensorDataType, int targetCollumn, std::chrono
     // m_csvReader->read_header(io::ignore_extra_column, m_sensorDataType);
 
     m_maxRowNumber = csv_read::maxRowCSV(m_csvFilePath);
+
+    m_sharedMemory = sharedMemory;
+    m_dataIndex = dataIndex;
 }
 
 void DataProducer::print_data() {
@@ -38,7 +41,6 @@ void DataProducer::run() {
     std::chrono::duration<double> elapsedPeriodicity;
     bool csvEnd = false;
     bool csvReaderFlag;
-
 
     // read in the first data
     // csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
@@ -71,7 +73,8 @@ void DataProducer::run() {
         m_data = csv_read::readCellCSV(m_csvFilePath, rowCount, m_targetCollumn, m_maxRowNumber);
 
         // write data in shared memory
-        
+        m_sharedMemory->access(0, m_dataIndex, m_data);
+
       }
     }
 }

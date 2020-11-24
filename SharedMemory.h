@@ -1,3 +1,6 @@
+#ifndef __SHAREDMEMORY_H_
+#define __SHAREDMEMORY_H_
+
 #include <iostream>
 #include <string>
 #include <array>
@@ -44,3 +47,5 @@ class SharedMemory{
       memory[index] = value;
    }
 };
+
+#endif // __SHAREDMEMORY_H_

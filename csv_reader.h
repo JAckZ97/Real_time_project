@@ -42,7 +42,7 @@ namespace csv_read
     // read specific cell of the csv file
     double readCellCSV(string fileName, int rowNumber, int collumnNumber, int maxRowNumber) {
         double data = 0;
-        int maxCollumn = 5;
+        int maxCollumn = 100; // FIXME : Random number atm 
 
         // NOTE : collumnNumber starts at 0 ! 
 
