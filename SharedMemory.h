@@ -3,49 +3,24 @@
 
 #include <iostream>
 #include <string>
-#include <array>
-#include <mutex>
+// #include <mutex> // FIXME : replace
+#include <pthread.h>
 using namespace std;
 
 class SharedMemory{
 
-   public:
    // variables
-   array<double, 8> memory {0};
-   mutex mu;
+   static const int SIZE = 8;
+   double memory[SIZE];
+   pthread_mutex_t lock;
+   // mutex mu; // FIXME : replace
 
-   // methods
-   array<double, 8> access(int mode, int index, double value){
-      // mode = 0 -> write
-      // mode = 1 -> read
-      
-      mu.lock();
+   public:
+   SharedMemory();
+   double* readArray();
+   void writeArray(int index, double value);
+   double* access(int mode, int index, double value);
 
-      // init temp
-      array<double, 8> tempMem {0};
-
-      // switch case mode
-      if(mode == 0){
-         writeArray(index, value);
-      }
-      else if (mode == 1)
-      {
-         tempMem = readArray();
-      }
-
-      mu.unlock();
-
-      return tempMem;
-   }
-
-   private:
-   array<double, 8> readArray(){
-      return memory;
-   }
-
-   void writeArray(int index, double value){
-      memory[index] = value;
-   }
 };
 
 #endif // __SHAREDMEMORY_H_

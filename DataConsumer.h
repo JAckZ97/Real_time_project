@@ -2,7 +2,6 @@
 #define __DATACONSUMER_H_
 
 // standard imports
-#include <thread>
 #include <iostream>
 #include <unistd.h>
 #include <iomanip>
@@ -16,11 +15,12 @@ class DataConsumer {
   // attributes
   int m_period; // ms
   SharedMemory *m_sharedMemory;
+  int m_count;
 
   public:
   DataConsumer(SharedMemory *sharedMemory, int period);
-  array<double, 8> read_data();
-  void print_data(array<double, 8> data);
+  double* read_data();
+  void print_data(double *data);
   int ms_2_us(int timeMS);
   void run();
 

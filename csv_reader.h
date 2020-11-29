@@ -1,75 +1,58 @@
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <sstream>
+#include <string.h>
+//#include <mutex> // FIXME : replace
+
 using namespace std;
 
 namespace csv_read
 {
-    // read specific row of a CSV file
-    std::vector<double> readRowCSV(string fileName, int rowNumber, int maxRowNumber) {
-        std::vector<double> rowData;
-
-        if(rowNumber <= maxRowNumber){
-            ifstream myFile;
-            myFile.open(fileName);
-            string targetLine = "";
-            
-            int a = 0;
-
-            while (getline(myFile, targetLine)) {
-                a++;
-                if (a == rowNumber) {
-                    // cout << targetLine << endl;
-                    std::stringstream ss(targetLine);
-
-                    for (double i; ss >> i;) {
-                        rowData.push_back(i);
-                        if (ss.peek() == ',')
-                            ss.ignore();
-                    }
-                }
+    const char* readColFromLine(char* line, int num)
+        {
+            const char* tok;
+            for (tok = strtok(line, ",");
+                    tok && *tok;
+                    tok = strtok(NULL, ",\n"))
+            {
+                if (!--num)
+                    return tok;
             }
-        }
-        else{
-            cout << "invalid row access" << endl;
+            return NULL;
         }
 
-        return rowData;
-    }
+    // the csv starts at row 1 and col 1 (not at 0's)
+    // FIXME : we cant read (1,1)
+    double readCellCSV(const char* fileName, int row, int col)
+        {
+            FILE* stream = fopen(fileName, "r");
 
-    // read specific cell of the csv file
-    double readCellCSV(string fileName, int rowNumber, int collumnNumber, int maxRowNumber) {
-        double data = 0;
-        int maxCollumn = 100; // FIXME : Random number atm 
+            char line[1024];
+            int count = 1;
+            while (fgets(line, 1024, stream))
+            {
+                if(count == row){
+                    char* tmp = strdup(line);
+                    double data = atof(readColFromLine(tmp, col));
+                    free(tmp);
 
-        // NOTE : collumnNumber starts at 0 ! 
-
-        // check if the collumn number is valid
-        if(collumnNumber < maxCollumn){
-            std::vector<double> rowData = csv_read::readRowCSV(fileName, rowNumber, maxRowNumber);
-            data = rowData[collumnNumber];
-        }
-        else{
-            cout << "invalid cell" << endl;
-        }
-
-        return data;
-    }
-
-    // get maximum row number of csv file
-    int maxRowCSV(string fileName) {
-        ifstream myFile;
-        myFile.open(fileName);
-
-        string line;
-        int counter = 0;
-
-        while (getline(myFile, line)) {
-            counter++;
+                    fclose(stream);
+                    return data;
+                }
+                count = count + 1;
+            }
+            fclose(stream);
+            return -9999; // invalid number FIXME : quick fix
         }
 
-        return counter;
-    }
+    int maxRowCSV(const char* fileName)
+        {
+            FILE* stream = fopen(fileName, "r");
+
+            char line[1024];
+            int count = 0;
+            while (fgets(line, 1024, stream))
+            {
+                count = count + 1;
+            }
+            fclose(stream);
+            return count;
+        }
 }
