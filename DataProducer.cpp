@@ -16,15 +16,12 @@ DataProducer::DataProducer(string sensorDataType, int targetCollumn, double peri
     // m_csvReader = new io::CSVReader<1>(m_csvFilePath);
     // m_csvReader->read_header(io::ignore_extra_column, m_sensorDataType);
 
+    m_csvFilePath = "car_data.csv";
+
     m_maxRowNumber = csv_read::maxRowCSV(m_csvFilePath);
 
     m_sharedMemory = sharedMemory;
     m_dataIndex = dataIndex;
-}
-
-void DataProducer::print_data() {
-    cout << left;
-    cout <<  setw(20) << m_sensorDataType << to_string(m_data) << endl;
 }
 
 int DataProducer::ms_2_us(int timeMS) {
@@ -81,7 +78,7 @@ void DataProducer::run() {
       }
 
       // each period, we read the data
-      // NOTE : m_periodicity should be converted to seconds, since time.h time_t takes the current time in seconds
+      // NOTE : m_periodicity should be converted to seconds, since time.h time_t takes the current time in sec
       if(elapsedPeriodicity >= m_periodicity){
         // startTimePeriodicity = chrono::system_clock::now();
         time(&startTimePeriodicity);

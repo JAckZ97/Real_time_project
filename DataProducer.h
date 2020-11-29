@@ -19,7 +19,7 @@ class DataProducer {
   string m_sensorDataType;
   double m_data;
   double m_periodicity; // seconds
-  string m_csvFilePath = "car_data.csv";
+  string m_csvFilePath;
   // io::CSVReader<1>* m_csvReader;
   int m_targetCollumn;
   int m_maxRowNumber;
