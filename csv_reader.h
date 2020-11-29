@@ -1,4 +1,6 @@
 #include <string.h>
+#include <mutex> // FIXME : replace
+
 using namespace std;
 
 namespace csv_read
@@ -30,10 +32,13 @@ namespace csv_read
                     char* tmp = strdup(line);
                     double data = atof(readColFromLine(tmp, col));
                     free(tmp);
+
+                    fclose(stream);
                     return data;
                 }
                 count = count + 1;
             }
+            fclose(stream);
             return -9999; // invalid number FIXME : quick fix
         }
 
@@ -47,6 +52,7 @@ namespace csv_read
             {
                 count = count + 1;
             }
+            fclose(stream);
             return count;
         }
 }

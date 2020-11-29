@@ -1,7 +1,7 @@
 #include "DataProducer.h"
 #include "csv_reader.h"
 
-DataProducer::DataProducer(string sensorDataType, int targetCollumn, double periodicity, SharedMemory *sharedMemory, int dataIndex) {
+DataProducer::DataProducer(string sensorDataType, int targetCollumn, double periodicity, SharedMemory *sharedMemory, int dataIndex, CSVRead *csvRead) {
     // init variables
     m_sensorDataType = sensorDataType;
     m_periodicity = periodicity;
@@ -10,12 +10,13 @@ DataProducer::DataProducer(string sensorDataType, int targetCollumn, double peri
 
     m_sharedMemory = sharedMemory;
 
+    m_csvRead = csvRead;
+
     m_targetCollumn = targetCollumn;
 
     m_csvFilePath = "car_data.csv";
 
     m_maxRowNumber = csv_read::maxRowCSV(m_csvFilePath);
-    cout << "max row :" << m_maxRowNumber << endl;
 
     m_sharedMemory = sharedMemory;
     m_dataIndex = dataIndex;
@@ -33,6 +34,7 @@ double DataProducer::get_current_time(){
     // time_t msecs_time = (time_now.tv_sec * 1000) + (time_now.tv_usec / 1000);
     // return msecs_time;
 
+    // we get the time in seconds since epoch and the amount of time nano from the seocnd that passed, to get better accuracy
     struct timespec time_now{};
     clock_gettime(CLOCK_REALTIME, &time_now);
     time_t msecs_time = (time_now.tv_sec * 1000) + (time_now.tv_nsec / 1000000);
@@ -92,8 +94,9 @@ void DataProducer::run() {
         startTimePeriodicity = this->get_current_time();
         
         // read data here
-        m_data = csv_read::readCellCSV(m_csvFilePath, rowCount, m_targetCollumn);
+        m_data = m_csvRead->readCellCSV(m_csvFilePath, rowCount, m_targetCollumn);
         // cout << "data :" << m_data << endl;
+        // m_data = 0;
 
         // write data in shared memory
         m_sharedMemory->access(0, m_dataIndex, m_data);

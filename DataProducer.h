@@ -10,6 +10,7 @@
 #include <iomanip>
 // 3rd party imports
 #include "SharedMemory.h"
+#include "CSVRead.h"
 
 using namespace std;
 
@@ -27,8 +28,10 @@ class DataProducer {
   SharedMemory *m_sharedMemory;
   int m_dataIndex; // where it saves in the sharedMemory
 
+  CSVRead *m_csvRead;
+
   public:
-  DataProducer(string sensorDataType, int targetCollumn, double periodicity, SharedMemory *sharedMemory, int dataIndex);
+  DataProducer(string sensorDataType, int targetCollumn, double periodicity, SharedMemory *sharedMemory, int dataIndex, CSVRead *csvRead);
   int read_data(int row);
   void print_data();
   void run();
