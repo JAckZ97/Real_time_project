@@ -6,7 +6,7 @@
 #include <vector> // FIXME
 #include <string> // FIXME
 #include <unistd.h>
-#include <sys/time.h> // FIXME
+#include <time.h> // FIXME
 #include <iomanip>
 // 3rd party imports
 #include "SharedMemory.h"
@@ -19,7 +19,7 @@ class DataProducer {
   string m_sensorDataType;
   double m_data;
   double m_periodicity; // seconds
-  const char* m_csvFilePath = "car_data.csv";
+  const char* m_csvFilePath;
   // io::CSVReader<1>* m_csvReader;
   int m_targetCollumn;
   int m_maxRowNumber;

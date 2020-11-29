@@ -90,8 +90,8 @@ int main(int argc, char *argv[]) {
 
     pthread_t ptid0, ptid1, ptid2, ptid3, ptid4, ptid5, ptid6, ptid7 ; 
     pthread_create(&ptid0, NULL, &start_dp, (void *)ptrProd0);
-    pthread_create(&ptid1, NULL, &start_dp, (void *)ptrProd1);
-    pthread_create(&ptid2, NULL, &start_dp, (void *)ptrProd2);
+    // pthread_create(&ptid1, NULL, &start_dp, (void *)ptrProd1);
+    // pthread_create(&ptid2, NULL, &start_dp, (void *)ptrProd2);
     // pthread_create(&ptid3, NULL, &start_dp, (void *)ptrProd3);
     // pthread_create(&ptid4, NULL, &start_dp, (void *)ptrProd4);
     // pthread_create(&ptid5, NULL, &start_dp, (void *)ptrProd5);

@@ -12,6 +12,8 @@ DataProducer::DataProducer(string sensorDataType, int targetCollumn, double peri
 
     m_targetCollumn = targetCollumn;
 
+    m_csvFilePath = "car_data.csv";
+
     m_maxRowNumber = csv_read::maxRowCSV(m_csvFilePath);
     cout << "max row :" << m_maxRowNumber << endl;
 
@@ -24,9 +26,16 @@ int DataProducer::ms_2_us(int timeMS) {
 }
 
 double DataProducer::get_current_time(){
-    struct timeval time_now{};
-    gettimeofday(&time_now, nullptr);
-    time_t msecs_time = (time_now.tv_sec * 1000) + (time_now.tv_usec / 1000);
+    // http://www.qnx.com/developers/docs/6.5.0/index.jsp?topic=%2Fcom.qnx.doc.neutrino_lib_ref%2Fc%2Fclock_gettime.html
+    // http://www.qnx.com/developers/docs/6.5.0/index.jsp?topic=%2Fcom.qnx.doc.neutrino_lib_ref%2Ft%2Ftimespec.html
+    // struct timeval time_now{};
+    // gettimeofday(&time_now, nullptr);
+    // time_t msecs_time = (time_now.tv_sec * 1000) + (time_now.tv_usec / 1000);
+    // return msecs_time;
+
+    struct timespec time_now{};
+    clock_gettime(CLOCK_REALTIME, &time_now);
+    time_t msecs_time = (time_now.tv_sec * 1000) + (time_now.tv_nsec / 1000000);
     return msecs_time;
 }
 
