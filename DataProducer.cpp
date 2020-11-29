@@ -12,13 +12,8 @@ DataProducer::DataProducer(string sensorDataType, int targetCollumn, double peri
 
     m_targetCollumn = targetCollumn;
 
-    // setup the csv reader
-    // m_csvReader = new io::CSVReader<1>(m_csvFilePath);
-    // m_csvReader->read_header(io::ignore_extra_column, m_sensorDataType);
-
-    m_csvFilePath = "car_data.csv";
-
     m_maxRowNumber = csv_read::maxRowCSV(m_csvFilePath);
+    cout << "max row :" << m_maxRowNumber << endl;
 
     m_sharedMemory = sharedMemory;
     m_dataIndex = dataIndex;
@@ -28,15 +23,20 @@ int DataProducer::ms_2_us(int timeMS) {
     return timeMS * 1000;
 }
 
+double DataProducer::get_current_time(){
+    struct timeval time_now{};
+    gettimeofday(&time_now, nullptr);
+    time_t msecs_time = (time_now.tv_sec * 1000) + (time_now.tv_usec / 1000);
+    return msecs_time;
+}
+
 void DataProducer::run() {
 
-    int rowCount = 2; // we start at 1 because for better reference with the csv file, which the row starts with 1 label.
+    int rowCount = 2; // we start at 2 since row=1 is headers of the csv file
 
-    time_t startTime;
-    time(&startTime); // get the current time
-
-    time_t startTimePeriodicity;
-    time(&startTimePeriodicity); // get the current time
+    double startTime = this->get_current_time();
+    double startTimePeriodicity = this->get_current_time();
+    double currentTime;
 
     // auto startTime = chrono::system_clock::now();
     // auto startTimePeriodicity = chrono::system_clock::now();
@@ -47,31 +47,31 @@ void DataProducer::run() {
     bool csvEnd = false;
     bool csvReaderFlag;
 
+
     // read in the first data
     // csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
 
     // while not done reading the csv file
     while(!csvEnd){
-
-      time_t currentTime;
-      time(&currentTime); // get the current time
+      currentTime = this->get_current_time();
       
-      elapsedSecondsDataChange = difftime(currentTime, startTime);
-      elapsedPeriodicity = difftime(currentTime, startTimePeriodicity);
+      elapsedSecondsDataChange = currentTime - startTime;
+      elapsedPeriodicity = currentTime - startTimePeriodicity;
 
       // elapsedSecondsDataChange = chrono::system_clock::now() - startTime;
       // elapsedPeriodicity = chrono::system_clock::now() - startTimePeriodicity;
 
       // each second, we go to the next row to read the data (since each new row is 1s passed since data read from sensor)
-      if(elapsedSecondsDataChange >= 1){
+      if(elapsedSecondsDataChange >= 1000){ // 1000ms = 1s
         // startTime = chrono::system_clock::now();
-        time(&startTime); // get the current time
+        startTime = this->get_current_time();
 
         // csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
         rowCount++;
+        cout << "row :" << rowCount << endl;
 
         // FIXME : implement -> if reach the end -> exit
-        if(rowCount > m_maxRowNumber){
+        if(rowCount >= m_maxRowNumber){
           csvEnd = true;
           // cout << "reached the end" << rowCount << endl;
         }
@@ -81,14 +81,14 @@ void DataProducer::run() {
       // NOTE : m_periodicity should be converted to seconds, since time.h time_t takes the current time in sec
       if(elapsedPeriodicity >= m_periodicity){
         // startTimePeriodicity = chrono::system_clock::now();
-        time(&startTimePeriodicity);
+        startTimePeriodicity = this->get_current_time();
         
         // read data here
-        m_data = csv_read::readCellCSV(m_csvFilePath, rowCount, m_targetCollumn, m_maxRowNumber);
+        m_data = csv_read::readCellCSV(m_csvFilePath, rowCount, m_targetCollumn);
+        // cout << "data :" << m_data << endl;
 
         // write data in shared memory
         m_sharedMemory->access(0, m_dataIndex, m_data);
-
       }
     }
 }

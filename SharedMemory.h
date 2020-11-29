@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <mutex> // FIXME : replace
 #include <pthread.h>
 using namespace std;
 
@@ -12,6 +13,7 @@ class SharedMemory{
    static const int SIZE = 8;
    double memory[SIZE];
    pthread_mutex_t lock;
+   mutex mu; // FIXME : replace
 
    public:
    SharedMemory();
