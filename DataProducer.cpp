@@ -68,7 +68,6 @@ void DataProducer::run() {
 
         // csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
         rowCount++;
-        cout << "row :" << rowCount << endl;
 
         // FIXME : implement -> if reach the end -> exit
         if(rowCount >= m_maxRowNumber){

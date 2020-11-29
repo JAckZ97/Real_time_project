@@ -48,6 +48,7 @@ int DataConsumer::ms_2_us(int timeMS) {
 void DataConsumer::run() {
     while(true){
         // array<double, 8> data = read_data();
+        cout << "HERE" << endl;
         print_data(read_data());
 
         // delay

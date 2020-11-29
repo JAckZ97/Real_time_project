@@ -66,7 +66,10 @@ int main(int argc, char *argv[]) {
     // maybe accessing the CSV at the same time is causing race conditions ? 
 
     // ANCHOR : for some reason, different combination of DataProducer running is causing segmentation fault
-    
+
+    // ANCHOR : technically, if we are not writing to the sharedmem, we should get a print out of CAR with all 0s
+    // but atm, we are getting segmentation fault ... (NEED TO SOLVE THIS FIRST !!!)
+
     // creating the data producer threads
     DataProducer prod0("Fuel_consumption",1, 10, &sharedMem, 0);
     DataProducer *ptrProd0 = &prod0;              
@@ -88,7 +91,7 @@ int main(int argc, char *argv[]) {
     pthread_t ptid0, ptid1, ptid2, ptid3, ptid4, ptid5, ptid6, ptid7 ; 
     pthread_create(&ptid0, NULL, &start_dp, (void *)ptrProd0);
     pthread_create(&ptid1, NULL, &start_dp, (void *)ptrProd1);
-    // pthread_create(&ptid2, NULL, &start_dp, (void *)ptrProd2);
+    pthread_create(&ptid2, NULL, &start_dp, (void *)ptrProd2);
     // pthread_create(&ptid3, NULL, &start_dp, (void *)ptrProd3);
     // pthread_create(&ptid4, NULL, &start_dp, (void *)ptrProd4);
     // pthread_create(&ptid5, NULL, &start_dp, (void *)ptrProd5);
@@ -103,7 +106,7 @@ int main(int argc, char *argv[]) {
     pthread_create(&ptidCons, NULL, &start_dc, (void *)ptrCons);
 
     // wait for producer threads
-    pthread_join(ptid0, NULL); 
+    // pthread_join(ptid0, NULL); 
     // pthread_join(ptid1, NULL); 
     // pthread_join(ptid2, NULL); 
     // pthread_join(ptid3, NULL); 
