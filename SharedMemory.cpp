@@ -10,6 +10,8 @@ SharedMemory::SharedMemory(){
     memory[5] = 0;
     memory[6] = 0;
     memory[7] = 0;
+
+    lock = PTHREAD_MUTEX_INITIALIZER;
 }
 
 double* SharedMemory::readArray(){
