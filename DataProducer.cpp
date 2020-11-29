@@ -1,7 +1,7 @@
 #include "DataProducer.h"
 #include "csv_reader.h"
 
-DataProducer::DataProducer(string sensorDataType, int targetCollumn, std::chrono::duration<double> periodicity, SharedMemory *sharedMemory, int dataIndex) {
+DataProducer::DataProducer(string sensorDataType, int targetCollumn, double periodicity, SharedMemory *sharedMemory, int dataIndex) {
     // init variables
     m_sensorDataType = sensorDataType;
     m_periodicity = periodicity;
@@ -35,10 +35,18 @@ void DataProducer::run() {
 
     int rowCount = 2; // we start at 1 because for better reference with the csv file, which the row starts with 1 label.
 
-    auto startTime = chrono::system_clock::now();
-    auto startTimePeriodicity = chrono::system_clock::now();
-    std::chrono::duration<double> elapsedSecondsDataChange;
-    std::chrono::duration<double> elapsedPeriodicity;
+    time_t startTime;
+    time(&startTime); // get the current time
+
+    time_t startTimePeriodicity;
+    time(&startTimePeriodicity); // get the current time
+
+    // auto startTime = chrono::system_clock::now();
+    // auto startTimePeriodicity = chrono::system_clock::now();
+
+    double elapsedSecondsDataChange;
+    double elapsedPeriodicity;
+
     bool csvEnd = false;
     bool csvReaderFlag;
 
@@ -47,13 +55,20 @@ void DataProducer::run() {
 
     // while not done reading the csv file
     while(!csvEnd){
+
+      time_t currentTime;
+      time(&currentTime); // get the current time
       
-      elapsedSecondsDataChange = chrono::system_clock::now() - startTime;
-      elapsedPeriodicity = chrono::system_clock::now() - startTimePeriodicity;
+      elapsedSecondsDataChange = difftime(currentTime, startTime);
+      elapsedPeriodicity = difftime(currentTime, startTimePeriodicity);
+
+      // elapsedSecondsDataChange = chrono::system_clock::now() - startTime;
+      // elapsedPeriodicity = chrono::system_clock::now() - startTimePeriodicity;
 
       // each second, we go to the next row to read the data (since each new row is 1s passed since data read from sensor)
-      if(elapsedSecondsDataChange >= 1s){
-        startTime = chrono::system_clock::now();
+      if(elapsedSecondsDataChange >= 1){
+        // startTime = chrono::system_clock::now();
+        time(&startTime); // get the current time
 
         // csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
         rowCount++;
@@ -66,8 +81,10 @@ void DataProducer::run() {
       }
 
       // each period, we read the data
+      // NOTE : m_periodicity should be converted to seconds, since time.h time_t takes the current time in seconds
       if(elapsedPeriodicity >= m_periodicity){
-        startTimePeriodicity = chrono::system_clock::now();
+        // startTimePeriodicity = chrono::system_clock::now();
+        time(&startTimePeriodicity);
         
         // read data here
         m_data = csv_read::readCellCSV(m_csvFilePath, rowCount, m_targetCollumn, m_maxRowNumber);

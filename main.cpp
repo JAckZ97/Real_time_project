@@ -1,11 +1,12 @@
 // standard imports
 #include <iostream>
-#include <string>
+#include <string> // FIXME
 #include<stdio.h>
 // user import
 #include "DataProducer.h"
 #include "DataConsumer.h"
-#include <thread>
+// #include <thread>
+#include <pthread.h> 
 
 using namespace std;
 
@@ -34,6 +35,21 @@ using namespace std;
 - TODO : add the proper data csv
 - TODO : add all the threads needed
 */
+void* start_dp(void* arg){
+    DataProducer *this_ = (DataProducer *)arg;
+    this_->run();
+    return 0;
+}
+
+void* start_dc(void* arg){
+    DataConsumer *this_ = (DataConsumer *)arg;
+    this_->run();
+    return 0;
+}
+
+double ms_2_s(double timeMS){
+    return timeMS / 1000;
+}
 
 int main(int argc, char *argv[]) {
 
@@ -45,42 +61,55 @@ int main(int argc, char *argv[]) {
     // creating the data producer threads
     // FIXME : for now I add the pointer to the data array so that the data can be changed to simulate the common database
     // future version we should get rid of this input parameter
-    DataProducer prod0("Fuel_consumption",0, 10ms, &sharedMem, 0);
-    DataProducer prod1("Engine_speed", 12, 500ms, &sharedMem, 1);
-    DataProducer prod2("Engine_coolant_temperature1", 17, 2s, &sharedMem, 2);
-    DataProducer prod3("Current_gear", 33, 100ms, &sharedMem, 3);
-    DataProducer prod4("Transmission_oil_temperature", 34, 5s, &sharedMem, 4); // FIXME
-    DataProducer prod5("Vehicule_speed", 43, 100ms, &sharedMem, 5);
-    DataProducer prod6("Acceleration_speed_longitudinal", 44, 150ms, &sharedMem, 6);
-    DataProducer prod7("Indication_of_break_switch", 45, 100ms, &sharedMem, 7);
+    DataProducer prod0("Fuel_consumption",0, ms_2_s(10), &sharedMem, 0);
+    DataProducer *ptrProd0 = &prod0;              
+    DataProducer prod1("Engine_speed", 12, ms_2_s(500), &sharedMem, 1);
+    DataProducer *ptrProd1 = &prod1;
+    DataProducer prod2("Engine_coolant_temperature1", 17, 2, &sharedMem, 2);
+    DataProducer *ptrProd2 = &prod2;
+    DataProducer prod3("Current_gear", 33, ms_2_s(100), &sharedMem, 3);
+    DataProducer *ptrProd3 = &prod3;
+    DataProducer prod4("Transmission_oil_temperature", 34, 5, &sharedMem, 4); 
+    DataProducer *ptrProd4 = &prod4;
+    DataProducer prod5("Vehicule_speed", 43, ms_2_s(100), &sharedMem, 5);
+    DataProducer *ptrProd5 = &prod5;
+    DataProducer prod6("Acceleration_speed_longitudinal", 44, ms_2_s(150), &sharedMem, 6);
+    DataProducer *ptrProd6 = &prod6;
+    DataProducer prod7("Indication_of_break_switch", 45, ms_2_s(100), &sharedMem, 7);
+    DataProducer *ptrProd7 = &prod7;
     // FIXME : csv collumn starts at 0
 
-    std::thread tp(&DataProducer::run, prod0);
-    std::thread tp1(&DataProducer::run, prod1);
-    std::thread tp2(&DataProducer::run, prod2);
-    std::thread tp3(&DataProducer::run, prod3);
-    std::thread tp4(&DataProducer::run, prod4);
-    std::thread tp5(&DataProducer::run, prod5);
-    std::thread tp6(&DataProducer::run, prod6);
-    std::thread tp7(&DataProducer::run, prod7);
+    pthread_t ptid0, ptid1, ptid2, ptid3, ptid4, ptid5, ptid6, ptid7 ; 
+    pthread_create(&ptid0, NULL, &start_dp, (void *)ptrProd0);
+    pthread_create(&ptid1, NULL, &start_dp, (void *)ptrProd1);
+    pthread_create(&ptid2, NULL, &start_dp, (void *)ptrProd2);
+    pthread_create(&ptid3, NULL, &start_dp, (void *)ptrProd3);
+    pthread_create(&ptid4, NULL, &start_dp, (void *)ptrProd4);
+    pthread_create(&ptid5, NULL, &start_dp, (void *)ptrProd5);
+    pthread_create(&ptid6, NULL, &start_dp, (void *)ptrProd6);
+    pthread_create(&ptid7, NULL, &start_dp, (void *)ptrProd7);
 
     // creating the data consumer thread
     int periodMS = 10;
     DataConsumer cons(&sharedMem, periodMS);
-    std::thread tc(&DataConsumer::run, cons);
+    DataConsumer *ptrCons = &cons;
+    pthread_t ptidCons;
+    pthread_create(&ptidCons, NULL, &start_dc, (void *)ptrCons);
 
     // wait for producer threads
-    tp.join();
-    tp1.join();
-    tp2.join();
-    tp3.join();
-    tp4.join();
-    tp5.join();
-    tp6.join();
-    tp7.join();
+    pthread_join(ptid0, NULL); 
+    pthread_join(ptid1, NULL); 
+    pthread_join(ptid2, NULL); 
+    pthread_join(ptid3, NULL); 
+    pthread_join(ptid4, NULL); 
+    pthread_join(ptid5, NULL); 
+    pthread_join(ptid6, NULL); 
+    pthread_join(ptid7, NULL); 
 
     // wait for consumer thread
-    tc.join();
+    pthread_join(ptidCons, NULL); 
+
+    pthread_exit(NULL); 
 
     return 0;
 }
