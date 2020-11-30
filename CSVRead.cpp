@@ -1,7 +1,9 @@
 #include "CSVRead.h"
 
 CSVRead::CSVRead(){
-    lock = PTHREAD_MUTEX_INITIALIZER;
+    // lock = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_init(&lock, NULL);
+
 }
 
 const char* CSVRead::readColFromLine(char* line, int num)

@@ -11,7 +11,8 @@ SharedMemory::SharedMemory(){
     memory[6] = 0;
     memory[7] = 0;
 
-    lock = PTHREAD_MUTEX_INITIALIZER;
+    // lock = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_init(&lock, NULL);
 }
 
 double* SharedMemory::readArray(){
