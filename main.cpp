@@ -11,30 +11,13 @@
 using namespace std;
 
 /*
- * NOTE : 3rd party library used
- * https://github.com/ben-strasser/fast-cpp-csv-parser
  *
  * FIXME : modified the header for Engine_coolant_temperature since there is duplicate (ie modified top Engine_coolant_temparature1)
- *
- * FIXME : add the std where necessary for more clarity
- *
+ * 
  * NOTE : to compile and run the code
  * $ c++ -pthread *.cpp -o main && ./main
 */
 
-/*
-- TODO : add csv_read end check in data producer thread
-- TODO : csv_read -> reading the first row gives error (the header row)
-- TODO : map the dataproducer threads to the correct collumn number 
-- TODO : glue everything together
-- TODO : maxCollumn for csv_reader
-- TODO : write to jack's share memory
-- TODO : how to end the whole script correctly
-
-- TODO : better printout
-- TODO : add the proper data csv
-- TODO : add all the threads needed
-*/
 void* start_dp(void* arg){
     DataProducer *this_ = (DataProducer *)arg;
     this_->run();

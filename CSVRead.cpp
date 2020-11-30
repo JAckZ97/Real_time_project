@@ -26,6 +26,7 @@ double CSVRead::readCellCSV(const char* fileName, int row, int col)
         pthread_mutex_lock(&lock);
         FILE* stream = fopen(fileName, "r");
 
+        // the size of line[] array should be big enough to accomadate the 50+ collumns of the car data csv
         char line[3072];
         int count = 1;
         while (fgets(line, 3072, stream))
