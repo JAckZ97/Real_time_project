@@ -49,18 +49,11 @@ void DataProducer::run() {
     double startTimePeriodicity = this->get_current_time();
     double currentTime;
 
-    // auto startTime = chrono::system_clock::now();
-    // auto startTimePeriodicity = chrono::system_clock::now();
-
     double elapsedSecondsDataChange;
     double elapsedPeriodicity;
 
     bool csvEnd = false;
     bool csvReaderFlag;
-
-
-    // read in the first data
-    // csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
 
     // while not done reading the csv file
     while(!csvEnd){
@@ -69,34 +62,25 @@ void DataProducer::run() {
       elapsedSecondsDataChange = currentTime - startTime;
       elapsedPeriodicity = currentTime - startTimePeriodicity;
 
-      // elapsedSecondsDataChange = chrono::system_clock::now() - startTime;
-      // elapsedPeriodicity = chrono::system_clock::now() - startTimePeriodicity;
-
       // each second, we go to the next row to read the data (since each new row is 1s passed since data read from sensor)
       if(elapsedSecondsDataChange >= 1000){ // 1000ms = 1s
         // startTime = chrono::system_clock::now();
         startTime = this->get_current_time();
 
-        // csvReaderFlag = m_csvReader->read_row(m_data); // here we read the csv data into m_data , csvReaderFlag will return false if it is the end of the csv file
         rowCount++;
 
-        // FIXME : implement -> if reach the end -> exit
         if(rowCount >= m_maxRowNumber){
           csvEnd = true;
-          // cout << "reached the end" << rowCount << endl;
         }
       }
 
       // each period, we read the data
       // NOTE : m_periodicity should be converted to seconds, since time.h time_t takes the current time in sec
       if(elapsedPeriodicity >= m_periodicity){
-        // startTimePeriodicity = chrono::system_clock::now();
         startTimePeriodicity = this->get_current_time();
         
         // read data here
         m_data = m_csvRead->readCellCSV(m_csvFilePath, rowCount, m_targetCollumn);
-        // cout << "data :" << m_data << endl;
-        // m_data = 0;
 
         // write data in shared memory
         m_sharedMemory->access(0, m_dataIndex, m_data);

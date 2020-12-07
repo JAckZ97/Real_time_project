@@ -2,7 +2,6 @@
 #define __CSVREAD_H_
 
 #include <string.h>
-// #include <mutex> // FIXME : replace
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>

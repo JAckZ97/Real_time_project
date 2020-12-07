@@ -12,7 +12,7 @@ using namespace std;
 
 /*
  *
- * FIXME : modified the header for Engine_coolant_temperature since there is duplicate (ie modified top Engine_coolant_temparature1)
+ * NOTE : modified the header for Engine_coolant_temperature since there is duplicate (ie modified top Engine_coolant_temparature1)
  * 
  * NOTE : to compile and run the code
  * $ c++ -pthread *.cpp -o main && ./main
@@ -42,18 +42,6 @@ int main(int argc, char *argv[]) {
     SharedMemory sharedMem; // NOTE : instead of declaring SharedMemory *sharedMem and passing as sharedMem -> SharedMemory and passing as &sharedMem does not trigger mutex error
     CSVRead csvRead;
 
-    // FIXME : to use this new csv_read + DataProducer -> all collumn# of the data have to do + 1(ie. Fuel_consumption from 0 -> 1)
-    // FIXME : all units of time should be converted to ms
-    // NOTE : above changes are implemented
-
-    // ANCHOR : potential problem is the reading of the CSV file ?
-    // maybe accessing the CSV at the same time is causing race conditions ? 
-
-    // ANCHOR : for some reason, different combination of DataProducer running is causing segmentation fault
-
-    // ANCHOR : technically, if we are not writing to the sharedmem, we should get a print out of CAR with all 0s
-    // but atm, we are getting segmentation fault ... (NEED TO SOLVE THIS FIRST !!!)
-
     // creating the data producer threads
     DataProducer prod0("Fuel_consumption",1, 10, &sharedMem, 0, &csvRead);
     DataProducer *ptrProd0 = &prod0;              
@@ -71,24 +59,6 @@ int main(int argc, char *argv[]) {
     DataProducer *ptrProd6 = &prod6;
     DataProducer prod7("Indication_of_break_switch", 46, 100, &sharedMem, 7, &csvRead);
     DataProducer *ptrProd7 = &prod7;
-
-
-    // DataProducer prod0("Fuel_consumption",1, 10, &sharedMem, 0, &csvRead);
-    // DataProducer *ptrProd0 = &prod0;              
-    // DataProducer prod1("Engine_speed", 2, 500, &sharedMem, 1, &csvRead);
-    // DataProducer *ptrProd1 = &prod1;
-    // DataProducer prod2("Engine_coolant_temperature1", 3, s_2_ms(2), &sharedMem, 2, &csvRead);
-    // DataProducer *ptrProd2 = &prod2;
-    // DataProducer prod3("Current_gear", 4, 100, &sharedMem, 3, &csvRead);
-    // DataProducer *ptrProd3 = &prod3;
-    // DataProducer prod4("Transmission_oil_temperature", 5, s_2_ms(5), &sharedMem, 4, &csvRead); 
-    // DataProducer *ptrProd4 = &prod4;
-    // DataProducer prod5("Vehicule_speed", 6, 100, &sharedMem, 5, &csvRead);
-    // DataProducer *ptrProd5 = &prod5;
-    // DataProducer prod6("Acceleration_speed_longitudinal", 7, 150, &sharedMem, 6, &csvRead);
-    // DataProducer *ptrProd6 = &prod6;
-    // DataProducer prod7("Indication_of_break_switch", 17, 100, &sharedMem, 7, &csvRead);
-    // DataProducer *ptrProd7 = &prod7;
 
     pthread_t ptid0, ptid1, ptid2, ptid3, ptid4, ptid5, ptid6, ptid7 ; 
     pthread_create(&ptid0, NULL, &start_dp, (void *)ptrProd0);
