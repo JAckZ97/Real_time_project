@@ -20,7 +20,6 @@ const char* CSVRead::readColFromLine(char* line, int num)
     }
 
 // the csv starts at row 1 and col 1 (not at 0's)
-// FIXME : we cant read (1,1)
 double CSVRead::readCellCSV(const char* fileName, int row, int col)
     {
         pthread_mutex_lock(&lock);
@@ -44,7 +43,7 @@ double CSVRead::readCellCSV(const char* fileName, int row, int col)
         }
         fclose(stream);
         pthread_mutex_unlock(&lock);
-        return -9999; // invalid number FIXME : quick fix
+        return -9999; 
     }
 
 int CSVRead::maxRowCSV(const char* fileName)

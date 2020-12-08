@@ -28,7 +28,6 @@ double* SharedMemory::access(int mode, int index, double value){
     // mode = 1 -> read
     
     pthread_mutex_lock(&lock);
-    // mu.lock(); // FIXME : replace
 
     // init temp
     double *tempMem;
@@ -43,7 +42,6 @@ double* SharedMemory::access(int mode, int index, double value){
     }
 
     pthread_mutex_unlock(&lock);
-    // mu.unlock(); // FIXME : replace
 
     return tempMem;
 }

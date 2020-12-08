@@ -13,9 +13,6 @@ double* DataConsumer::read_data() {
 }
 
 void DataConsumer::print_data (double *data) {
-    // quick hack to simulate a "clear terminal" so that next set data can be displayed, without appending to the terminal
-//    printf("\033[2J");
-//    printf("\033[%d;%dH", 0, 0);
 
     // ascii art car
     cout<<"   ___   _   ___  " << endl;
@@ -38,7 +35,6 @@ void DataConsumer::print_data (double *data) {
     m_count = m_count + 1;
     cout <<  setw(40) << "count" << m_count << endl;
 
-    // cout <<  "\r" << data[0] << " - " << data[1] << " - " << data[2] << " - " << data[3] << " - " << data[4] << " - " << data[5] << " - " << data[6] << " - " << data[7] << flush;
 }
 
 int DataConsumer::ms_2_us(int timeMS) {

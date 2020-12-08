@@ -1,5 +1,4 @@
 #include <string.h>
-//#include <mutex> // FIXME : replace
 
 using namespace std;
 
@@ -19,7 +18,6 @@ namespace csv_read
         }
 
     // the csv starts at row 1 and col 1 (not at 0's)
-    // FIXME : we cant read (1,1)
     double readCellCSV(const char* fileName, int row, int col)
         {
             FILE* stream = fopen(fileName, "r");
@@ -39,7 +37,7 @@ namespace csv_read
                 count = count + 1;
             }
             fclose(stream);
-            return -9999; // invalid number FIXME : quick fix
+            return -9999; 
         }
 
     int maxRowCSV(const char* fileName)
